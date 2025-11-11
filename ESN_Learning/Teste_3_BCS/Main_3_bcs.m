@@ -5,16 +5,15 @@ clc
 bcs_settings_hlim
 
 % Importando dados
-%Entradas = readmatrix('Entradas_2_BCS.csv');
-Entradas = readmatrix('Entradas_2.1_BCS.csv');
-    
-% Condição inicial 
-x0 = [7536344.5283922757953405380249023, 3561883.2242104276083409786224365, 0.011747680694129930545344109305006];
-x0 = [8284222.04662957, 2422719.91869910, 0.0100126048518194];
-% uk_1 = [0.001 0.001]';
-uk_1 = [58 47]'; 
+Entradas = readmatrix('Entradas_3_BCS.csv');
 
-Ts = 1; % período de amostragem
+% Condição inicial 
+x0 = [8566946.93986076, 3779943.5859258, 0.00935261375835375];
+
+% uk_1 = [0.001 0.001]';
+uk_1 = [58 47]';    
+
+Ts = 2; % período de amostragem
 tsim = 10000; % tempo de simulação
 nsim = tsim/Ts; % numero de amostras da simulação
 
@@ -47,8 +46,7 @@ Saidas = [abs(pin), abs(H)];
 Colunas = {'P_in', 'H'};
 Saidas = [Colunas; num2cell(Saidas)];
 % Salva no Excel
-%writecell(Saidas, 'Saidas_2_xlsx.xlsx');
-writecell(Saidas, 'Saidas_2.1_xlsx.xlsx');
+writecell(Saidas, 'Saidas_3_xlsx.xlsx');
 %% Grafico
 t = Ts:Ts:nsim*Ts;
 figure(1)
