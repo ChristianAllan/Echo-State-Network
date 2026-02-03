@@ -47,6 +47,126 @@ Colunas = {'P_in', 'H'};
 Saidas = [Colunas; num2cell(Saidas)];
 % Salva no Excel
 writecell(Saidas, 'Saidas_3_xlsx.xlsx');
+
+%% Freq Constante
+close all
+clear
+clc
+bcs_settings_hlim
+
+% Condição inicial 
+x0 = [12419821.869903877377510070800781; 3092094.294124601408839225769043; 0.00041801326182302643227894911603926];
+
+fconst = 50;
+uk_1 = [fconst 10.00]';
+    
+Ts = 1; % período de amostragem
+tsim = 350; % tempo de simulação
+nsim = tsim/Ts; % numero de amostras da simulação
+
+for j=1:nsim
+    
+    tsim = j*Ts;
+    
+    % ESP Start-up 
+    if tsim > 1 && tsim < 100
+        uk_1 = uk_1 + [fconst 0.5]';
+        uk_1 = min(uk_1, [fconst 20]');
+    end
+  
+    if tsim > 100 && tsim < 200
+        uk_1 = uk_1 + [fconst 0.5]';
+        uk_1 = min(uk_1, [fconst 50]');
+    end
+    
+    if tsim > 200 
+        uk_1 = uk_1 + [fconst 0.5]';
+        uk_1 = min(uk_1, [fconst 100]');
+    end
+    
+        
+    
+    [t,x_t]=ode45(@(t,x)bcs_model(t,x,uk_1),[0 Ts],x0);
+    xpk(j,:) = x_t(end,:);
+    x0 = xpk(j,:);
+    y_sea = eq_medicao(x0,uk_1);
+    ypk = y_sea(1:2);
+    pin(j,:) = ypk(1);
+    H(j,:) = ypk(2);
+    uk(j,:) = uk_1;
+    Xk(:,j) = x0;
+    % Potência
+    Pk(j,:) = y_sea(end);
+    
+end
+% Exportando dados 
+Saidas = [abs(pin), abs(H)];
+%writematrix(Saidas, 'Saidas_xlsx.xlsx');
+% Titulo
+Colunas = {'P_in', 'H'};
+Saidas = [Colunas; num2cell(Saidas)];
+% Salva no Excel
+writecell(Saidas, 'f_const_xlsx.xlsx');
+%% Zc Constante
+close all
+clear
+clc
+bcs_settings_hlim
+
+% Condição inicial 
+x0 = [12419821.869903877377510070800781; 3092094.294124601408839225769043; 0.00041801326182302643227894911603926];
+
+zcconst = 50;
+
+uk_1 = [35.00 zcconst]';
+    
+Ts = 1; % período de amostragem
+tsim = 350; % tempo de simulação
+nsim = tsim/Ts; % numero de amostras da simulação
+
+for j=1:nsim
+    
+    tsim = j*Ts;
+    
+    % ESP Start-up 
+    if tsim > 1 && tsim < 100
+        uk_1 = uk_1 + [10 zcconst]';
+        uk_1 = min(uk_1, [35 zcconst]');
+    end
+  
+    if tsim > 100 && tsim < 200
+        uk_1 = uk_1 + [10 zcconst]';
+        uk_1 = min(uk_1, [50 zcconst]');
+    end
+    
+    if tsim > 200 
+        uk_1 = uk_1 + [10 zcconst]';
+        uk_1 = min(uk_1, [60 zcconst]');
+    end
+    
+        
+    
+    [t,x_t]=ode45(@(t,x)bcs_model(t,x,uk_1),[0 Ts],x0);
+    xpk(j,:) = x_t(end,:);
+    x0 = xpk(j,:);
+    y_sea = eq_medicao(x0,uk_1);
+    ypk = y_sea(1:2);
+    pin(j,:) = ypk(1);
+    H(j,:) = ypk(2);
+    uk(j,:) = uk_1;
+    Xk(:,j) = x0;
+    % Potência
+    Pk(j,:) = y_sea(end);
+    
+end
+% Exportando dados 
+Saidas = [abs(pin), abs(H)];
+%writematrix(Saidas, 'Saidas_xlsx.xlsx');
+% Titulo
+Colunas = {'P_in', 'H'};
+Saidas = [Colunas; num2cell(Saidas)];
+% Salva no Excel
+writecell(Saidas, 'zc_const_xlsx.xlsx');
 %% Grafico
 t = Ts:Ts:nsim*Ts;
 figure(1)
