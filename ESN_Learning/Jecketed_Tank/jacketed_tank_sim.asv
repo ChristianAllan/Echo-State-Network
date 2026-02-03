@@ -38,7 +38,7 @@ for j=1:nsim
     yp(j,:)=y(end,:);
     x0=yp(j,:)';
     Y1(j,:) = x0(1);
-    Y2(j,:) = x0(2);
+    Y2(j,:) = yp(2);
 end
 
 Saidas = [abs(Y1), abs(Y2)];
